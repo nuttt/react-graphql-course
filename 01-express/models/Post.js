@@ -1,11 +1,12 @@
 const mongoose = require('mongoose')
-const ObjectId = mongoose.Schema.ObjectId
 
 const postSchema = mongoose.Schema({
   title: String,
   content: String,
-  tags: [{ type: String }],
-  authorId: ObjectId
+  tags: [String],
+  comments: [{
+    content: String
+  }]
 }, {
   timestamps: true
 })
