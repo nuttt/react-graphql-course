@@ -4,7 +4,7 @@ const ObjectId = mongoose.Schema.ObjectId
 const postSchema = mongoose.Schema({
   title: String,
   content: String,
-  tagIds: [{ type: ObjectId }],
+  tags: [{ type: String }],
   authorId: ObjectId
 }, {
   timestamps: true
