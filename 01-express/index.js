@@ -6,19 +6,13 @@ const app = express()
 const { Post } = require('./models')
 
 app.get('/posts', async (req, res) => {
-  // test creating dummy posts
-  // await Post.create({
-  //   title: 'title',
-  //   content: 'content'
-  // })
-
   const posts = await Post.find()
   res.json(posts)
 })
 
 app.get('/posts/:postId', async (req, res) => {
   let post
-  // refactor: can use errorHandler in schema instead
+  // refactor: can use errorHandler in schema, or middleware instead
   try {
     post = await Post.findById(req.params.postId)
   } catch (err) {
@@ -31,6 +25,21 @@ app.get('/posts/:postId', async (req, res) => {
     return res.sendStatus(404)
   }
   res.json(post)
+})
+
+app.get('/tags', async (req, res) => {
+  const tags = await Post.distinct('tags')
+  res.json(tags)
+})
+
+app.get('/tags/:tag', async (req, res) => {
+  const posts = await Post.find({ tags: req.params.tag })
+  res.json(posts)
+})
+
+app.get('/tags/all', async (req, res) => {
+  const posts = await Post.find()
+  res.json(posts)
 })
 
 const server = app.listen(process.env.PORT || 3000, () => {
