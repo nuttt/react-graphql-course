@@ -5,6 +5,11 @@ const app = express()
 
 const { Post } = require('./models')
 
+app.use((req, res, next) => {
+  console.log(req.url)
+  next()
+})
+
 app.get('/posts', async (req, res) => {
   const posts = await Post.find()
   res.json(posts)
