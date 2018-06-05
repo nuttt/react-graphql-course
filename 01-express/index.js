@@ -2,11 +2,17 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
+const bodyParser = require('body-parser')
+
+const _ = require('lodash')
+
 const app = express()
 
-const { Post } = require('./models')
+const { Post, User } = require('./models')
 
 app.use(morgan('dev'))
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 app.get('/posts', async (req, res) => {
   const posts = await Post.find()
@@ -43,6 +49,17 @@ app.get('/tags/:tag', async (req, res) => {
 app.get('/tags/all', async (req, res) => {
   const posts = await Post.find()
   res.json(posts)
+})
+
+app.post('/signup', async (req, res) => {
+  const user = await User.signup(req.body.username, req.body.password)
+  console.log(typeof user._id)
+  res.json(_.pick(user, ['_id', 'username']))
+})
+
+app.post('/login', async (req, res) => {
+  const accessToken = await User.createAccessToken(req.body.username, req.body.password)
+  res.json({ accessToken })
 })
 
 const server = app.listen(process.env.PORT || 3000, () => {
