@@ -4,7 +4,11 @@ const posts = require('./data.json')
 const main = async () => {
   await Post.deleteMany()
   for (const post of posts) {
-    await Post.create(post)
+    await Post.create({
+      title: post.title,
+      content: post.content,
+      tags: post.tags,
+    })
   }
 }
 
