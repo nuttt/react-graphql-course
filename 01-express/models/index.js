@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+mongoose.set('debug', true)
 
 const Post = require('./Post')
 const User = require('./User')
