@@ -20,10 +20,12 @@ router.get('/:postId', async (req, res) => {
     }
   }
 
+  const comments = await post.getComments()
+
   if (!post) {
     return res.sendStatus(404)
   }
-  res.json(post)
+  res.json(Object.assign({}, post.toObject(), { comments }))
 })
 
 router.post('/post', authMiddleware, async (req, res) => {

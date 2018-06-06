@@ -3,6 +3,7 @@ mongoose.set('debug', true)
 
 const Post = require('./Post')
 const User = require('./User')
+const Comment = require('./Comment')
 
 const url = 'mongodb://localhost:27017/redditclone'
 mongoose.connect(url)
@@ -13,5 +14,6 @@ mongoose.connection.once('open', () => {
 
 module.exports = {
   Post,
-  User
+  User,
+  Comment
 }
