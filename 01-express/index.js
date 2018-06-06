@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
 
 const _ = require('lodash')
 
@@ -60,6 +61,34 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
   const accessToken = await User.createAccessToken(req.body.username, req.body.password)
   res.json({ accessToken })
+})
+
+const authMiddleware = async (req, res, next) => {
+  token = req.headers.authorization || req.query.accessToken
+  if (!token) {
+    return res.sendStatus(401)
+  }
+
+  try {
+    const data = jwt.verify(token, 'mysecretkey')
+    req.user = await User.findById(data._id)
+    next()
+  } catch (err) {
+    if (err.name === 'JsonWebTokenError') {
+      return res.sendStatus(401)
+    }
+    throw err
+  }
+}
+
+app.post('/post', authMiddleware, async (req, res) => {
+  const post = await Post.create({
+    title: req.body.title,
+    content: req.body.content,
+    tags: req.body.tags,
+    authorId: req.user._id
+  })
+  res.json(post)
 })
 
 const server = app.listen(process.env.PORT || 3000, () => {
