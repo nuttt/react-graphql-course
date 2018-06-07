@@ -14,13 +14,15 @@ const { Post, User } = require('./models')
 const postsRoute = require('./routes/posts')
 const tagsRoute = require('./routes/tags')
 
+const graphqlHTTP = require('express-graphql')
+const schema = require('./schema')
+
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.use('/posts', postsRoute)
 app.use('/tags', tagsRoute)
-
 
 app.post('/signup', async (req, res) => {
   const user = await User.signup(req.body.username, req.body.password)
@@ -32,6 +34,11 @@ app.post('/login', async (req, res) => {
   const accessToken = await User.createAccessToken(req.body.username, req.body.password)
   res.json({ accessToken })
 })
+
+app.use('/graphql', graphqlHTTP({
+  schema,
+  graphiql: true
+}))
 
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`running on port ${server.address().port}`)
