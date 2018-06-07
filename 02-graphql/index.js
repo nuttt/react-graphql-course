@@ -9,7 +9,8 @@ const _ = require('lodash')
 
 const app = express()
 
-const { Post, User } = require('./models')
+const models = require('./models')
+const { Post, User } = models
 
 const postsRoute = require('./routes/posts')
 const tagsRoute = require('./routes/tags')
@@ -37,6 +38,9 @@ app.post('/login', async (req, res) => {
 
 app.use('/graphql', graphqlHTTP({
   schema,
+  context: {
+    models
+  },
   graphiql: true
 }))
 
