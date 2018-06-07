@@ -16,7 +16,9 @@ const postsRoute = require('./routes/posts')
 const tagsRoute = require('./routes/tags')
 
 const graphqlHTTP = require('express-graphql')
-const schema = require('./schema')
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
+
+const schema = require('./graphql')
 
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -36,13 +38,17 @@ app.post('/login', async (req, res) => {
   res.json({ accessToken })
 })
 
-app.use('/graphql', graphqlHTTP({
+app.use('/graphql', graphqlExpress({
   schema,
   context: {
     models
-  },
-  graphiql: true
+  }
 }))
+
+app.use('/graphiql', graphiqlExpress({
+  endpointURL: '/graphql'
+}))
+
 
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`running on port ${server.address().port}`)
