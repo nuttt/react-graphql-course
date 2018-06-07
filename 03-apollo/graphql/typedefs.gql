@@ -1,27 +1,38 @@
 # graphql/typedefs.gql
 
 type Query {
+  posts: [Post]
   post(id: ID!): Post
+  tags: [Tag]
+  tag(name: String!): Tag
+  user(id: ID, username: String): User
 }
 
 # Post's description can go here
 type Post {
   _id: ID
   # title of post
-  title: String!
-  content: String!
+  title: String
+  content: String
   tags: [Tag]
+  author: User
+  comments: [Comment]
+}
+
+type Comment {
+  _id: ID
+  content: String
   author: User
 }
 
 type User {
-  id: ID
+  _id: ID
   username: String
-  # posts: [Post]
+  posts: [Post]
 }
 
 # Since tag has no unique ID, it's hard to cache on client
 type Tag {
   name: String
-  # posts: [Post]
+  posts: [Post]
 }
