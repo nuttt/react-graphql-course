@@ -8,6 +8,21 @@ type Query {
   user(id: ID, username: String): User
 }
 
+type Mutation {
+  createAccessToken(username: String!, password: String!): accessToken
+  signup(username: String!, password: String!): User
+  createPost(data: CreatePostInput!): Post
+}
+
+input CreatePostInput {
+  title: String!
+  content: String!
+}
+
+type accessToken {
+  token: String
+}
+
 # Post's description can go here
 type Post {
   _id: ID

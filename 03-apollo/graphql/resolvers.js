@@ -23,6 +23,19 @@ module.exports = {
       }
     }
   },
+  Mutation: {
+    createAccessToken: (obj, { username, password }, { models: { User }}) => {
+      return User.createAccessToken(username, password)
+    },
+    signup: (obj, { username, password }, { models: { User }}) => {
+      return User.signup(username, password)
+    },
+    createPost: (obj, { data }, context) => {
+      const Post = context.models.Post
+      // how to get user?
+
+    }
+  },
   Post: {
     author: (post, args, { models: { User } }) => {
       return User.findById(post.authorId)

@@ -26,6 +26,9 @@ userSchema.statics.createAccessToken = async function(username, password) {
   if (!user) {
     return undefiend
   }
+  if (hashPassword(password) !== user.password) {
+    return undefined
+  }
   return jwt.sign({ _id: user._id }, 'mysecretkey')
 }
 
