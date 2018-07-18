@@ -69,6 +69,16 @@ module.exports = {
     signup: async (obj, { username, password }) => {
       const user = await User.signup(username, password)
       return user
+    },
+    createPost: async (obj, { data }, context) => {
+      if (!context.user) {
+        throw new Error('Unauthorized')
+      }
+
+      return Post.create({
+        ...data,
+        authorId: context.user.id
+      })
     }
   }
 }

@@ -35,5 +35,5 @@ type Mutation {
   # Return auth token
   login(username: String!, password: String!): String
   signup(username: String!, password: String!): User
-  # createPost(data: PostData!): Post
+  createPost(data: PostData!): Post
 }
