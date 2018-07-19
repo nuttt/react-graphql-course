@@ -1,7 +1,7 @@
 const { User, Post } = require('../models')
 const DataLoader = require('dataloader')
 
-const { PubSub } = require('graphql-subscriptions')
+const { PubSub, withFilter } = require('graphql-subscriptions')
 const pubsub = new PubSub()
 
 module.exports = {
@@ -87,7 +87,7 @@ module.exports = {
         authorId: context.user.id
       })
 
-      pubsub.publish('POST_CREATED', { id: post.id })
+      pubsub.publish('POST_CREATED', { id: post.id, tags: post.tags })
       return post
     }
   },
@@ -105,9 +105,11 @@ module.exports = {
         const post = await Post.findById(payload.id)
         return post
       },
-      subscribe: () => {
+      subscribe: withFilter(() => {
         return pubsub.asyncIterator('POST_CREATED')
-      }
+      }, (payload, { tag }) => {
+        return payload.tags.includes(tag)
+      })
     }
   }
 }
