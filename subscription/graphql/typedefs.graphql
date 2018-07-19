@@ -41,4 +41,5 @@ type Mutation {
 
 type Subscription {
   helloQueried: String
+  postCreated: Post
 }

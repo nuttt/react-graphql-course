@@ -64,7 +64,7 @@ module.exports = {
       return context.user
     },
     hello: () => {
-      pubsub.publish('helloQueried')
+      pubsub.publish('HELLO_QUERIED')
       return 'Hello World!'
     }
   },
@@ -82,10 +82,13 @@ module.exports = {
         throw new Error('Unauthorized')
       }
 
-      return Post.create({
+      const post = await Post.create({
         ...data,
         authorId: context.user.id
       })
+
+      pubsub.publish('POST_CREATED', { id: post.id })
+      return post
     }
   },
   Subscription: {
@@ -94,7 +97,16 @@ module.exports = {
         return `${new Date()}`
       },
       subscribe: () => {
-        return pubsub.asyncIterator('helloQueried')
+        return pubsub.asyncIterator('HELLO_QUERIED')
+      }
+    },
+    postCreated: {
+      resolve: async (payload) => {
+        const post = await Post.findById(payload.id)
+        return post
+      },
+      subscribe: () => {
+        return pubsub.asyncIterator('POST_CREATED')
       }
     }
   }
