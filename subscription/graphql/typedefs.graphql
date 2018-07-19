@@ -1,0 +1,44 @@
+type Tag {
+  name: String
+  posts: [Post]
+}
+
+type Post {
+  id: ID!
+  title: String
+  tags: [Tag]
+  content: String
+  author: User
+  titleLength: Int
+}
+
+type User {
+  id: ID!
+  username: String
+  posts: [Post]
+}
+
+type Query {
+  posts(tag: String, tags: [String]): [Post]
+  post(id: ID!): Post
+  users: [User]
+  me: User
+  hello: String
+}
+
+input PostData {
+  title: String
+  content: String
+  tags: [String]
+}
+
+type Mutation {
+  # Return auth token
+  login(username: String!, password: String!): String
+  signup(username: String!, password: String!): User
+  createPost(data: PostData!): Post
+}
+
+type Subscription {
+  helloQueried: String
+}
